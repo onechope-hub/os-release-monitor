@@ -25,8 +25,8 @@ def get_endoflife_cycles(slug):
         # LTS only
         return [e["cycle"] for e in data if e.get("lts")]
     if slug == "windows-server":
-        # LTSC only — year-based cycles like 2019, 2022, 2025; skip SAC (23h2-ac, 20h2-sac etc.)
-        return [e["cycle"] for e in data if e["cycle"].isdigit()]
+        # LTSC only, per the vendor's own lts flag (mirrors the ubuntu filter above)
+        return [e["cycle"] for e in data if e.get("lts")]
     if slug == "freebsd":
         # Only major versions >= 13 (minor point releases tracked separately are noise)
         result = []
@@ -37,7 +37,7 @@ def get_endoflife_cycles(slug):
                 if major >= 13:
                     result.append(cycle)
             except ValueError:
-                pass
+                print(f"[freebsd] skipping unparsable cycle: {cycle!r}", file=sys.stderr)
         return result
     return [e["cycle"] for e in data]
 
@@ -78,12 +78,18 @@ def main():
             print(f"[{vendor_key}] fetch error: {e}", file=sys.stderr)
             continue
 
-        known = set(state.get(vendor_key, []))
+        known_list = state.get(vendor_key, [])
+        if not cycles and known_list:
+            print(f"[{vendor_key}] API returned an empty cycle list, keeping previous state", file=sys.stderr)
+            continue
+
+        known = set(known_list)
         fresh = [c for c in cycles if c not in known]
         if fresh:
             if vendor_key == "freebsd":
-                # Deduplicate by major version — report "9" not "9.0", "9.1"
-                seen_majors = set()
+                # Seed from already-known majors so a routine point release of an
+                # already-announced major (e.g. "13.6" after "13.5") never re-alerts.
+                seen_majors = {c.split(".")[0] for c in known}
                 for cycle in fresh:
                     major = cycle.split(".")[0]
                     if major not in seen_majors:
@@ -94,8 +100,6 @@ def main():
                     new_releases.append(f"*{vendor_key}* {cycle}")
         state[vendor_key] = cycles
 
-    save_state(state)
-
     if new_releases:
         post_to_slack(webhook_url, new_releases)
         print(f"Posted {len(new_releases)} new release(s) to Slack")
@@ -103,6 +107,8 @@ def main():
             print(f"  {r}")
     else:
         print("No new releases")
+
+    save_state(state)
 
 
 if __name__ == "__main__":
