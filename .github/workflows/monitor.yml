@@ -18,8 +18,6 @@ jobs:
         with:
           python-version: "3.12"
 
-      - run: pip install requests
-
       - name: Check for new releases
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -29,6 +27,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add state.json
+          git add state.json eol_data.json eol_data.md
           git diff --cached --quiet || git commit -m "chore: update os release state"
           git push

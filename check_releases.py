@@ -1,7 +1,10 @@
+import datetime
 import json
 import os
+import subprocess
 import sys
-import requests
+import urllib.error
+import urllib.request
 
 ENDOFLIFE_VENDORS = {
     "ubuntu": "ubuntu",
@@ -15,18 +18,25 @@ ENDOFLIFE_VENDORS = {
 }
 
 STATE_FILE = "state.json"
+EOL_DATA_FILE = "eol_data.json"
+EOL_REPORT_FILE = "eol_data.md"
+ENDOFLIFE_API_BASE = "https://endoflife.date/api"
 
 
-def get_endoflife_cycles(slug):
-    resp = requests.get(f"https://endoflife.date/api/{slug}.json", timeout=10)
-    resp.raise_for_status()
-    data = resp.json()
+def fetch_cycles(slug):
+    req = urllib.request.Request(f"{ENDOFLIFE_API_BASE}/{slug}.json")
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        return json.load(resp)
+
+
+def filter_cycles(slug, data):
+    """Apply the per-vendor tracking rules and return the subset of cycle entries we care about."""
     if slug == "ubuntu":
         # LTS only
-        return [e["cycle"] for e in data if e.get("lts")]
+        return [e for e in data if e.get("lts")]
     if slug == "windows-server":
         # LTSC only, per the vendor's own lts flag (mirrors the ubuntu filter above)
-        return [e["cycle"] for e in data if e.get("lts")]
+        return [e for e in data if e.get("lts")]
     if slug == "freebsd":
         # Only major versions >= 13 (minor point releases tracked separately are noise)
         result = []
@@ -35,19 +45,58 @@ def get_endoflife_cycles(slug):
             try:
                 major = int(cycle.split(".")[0])
                 if major >= 13:
-                    result.append(cycle)
+                    result.append(e)
             except ValueError:
                 print(f"[freebsd] skipping unparsable cycle: {cycle!r}", file=sys.stderr)
         return result
-    return [e["cycle"] for e in data]
+    return list(data)
 
+
+def get_endoflife_cycles(entries):
+    return [e["cycle"] for e in entries]
+
+
+def build_eol_records(entries):
+    today = datetime.date.today()
+    records = []
+    for e in entries:
+        eol = e.get("eol")
+        is_eol = False
+        days_until_eol = None
+        if eol is True:
+            is_eol = True
+        elif isinstance(eol, str):
+            try:
+                eol_date = datetime.date.fromisoformat(eol)
+                days_until_eol = (eol_date - today).days
+                is_eol = eol_date <= today
+            except ValueError:
+                print(f"unparsable eol date: {eol!r}", file=sys.stderr)
+        records.append(
+            {
+                "cycle": e["cycle"],
+                "release_date": e.get("releaseDate"),
+                "latest": e.get("latest"),
+                "support": e.get("support"),
+                "eol": eol,
+                "is_eol": is_eol,
+                "days_until_eol": days_until_eol,
+            }
+        )
+    return records
 
 
 def post_to_slack(webhook_url, releases):
     lines = "\n".join(f"• {r}" for r in releases)
     payload = {"text": f":new: *New OS releases detected:*\n{lines}"}
-    resp = requests.post(webhook_url, json=payload, timeout=10)
-    resp.raise_for_status()
+    req = urllib.request.Request(
+        webhook_url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=10):
+        pass
 
 
 def load_state():
@@ -62,21 +111,147 @@ def save_state(state):
         json.dump(state, f, indent=2, sort_keys=True)
 
 
+def load_eol_data():
+    if os.path.exists(EOL_DATA_FILE):
+        with open(EOL_DATA_FILE) as f:
+            return json.load(f)
+    return {"generated_at": None, "vendors": {}}
+
+
+def save_eol_data(eol_data):
+    with open(EOL_DATA_FILE, "w") as f:
+        json.dump(eol_data, f, indent=2, sort_keys=True)
+
+
+def _format_flexible_date(value):
+    """Render an endoflife.date-style field (an ISO date, `true`, `false`, or absent)."""
+    if isinstance(value, str):
+        return value
+    if value is True:
+        return "Yes"
+    return "—"
+
+
+def _format_days_until_eol(days):
+    if days is None:
+        return "—"
+    if days < 0:
+        return f"{-days} days ago"
+    return str(days)
+
+
+def render_markdown_report(eol_data):
+    """Render the collected EOL data as a human-readable Markdown report."""
+    lines = ["# OS End-of-Life Report", ""]
+    generated_at = eol_data.get("generated_at")
+    if generated_at:
+        lines.append(f"_Generated: {generated_at}_")
+        lines.append("")
+    lines.append(
+        "Full machine-readable data: [`eol_data.json`](eol_data.json). "
+        "Regenerated on every `os-release-check` CI run."
+    )
+    lines.append("")
+
+    vendors = eol_data.get("vendors", {})
+    for vendor_key in sorted(vendors):
+        lines.append(f"## {vendor_key}")
+        lines.append("")
+        lines.append("| Cycle | Release date | Latest | Support until | EOL | Status | Days until EOL |")
+        lines.append("| --- | --- | --- | --- | --- | --- | --- |")
+        for record in vendors[vendor_key]:
+            status = "🔴 EOL" if record.get("is_eol") else "🟢 Supported"
+            lines.append(
+                "| {cycle} | {release_date} | {latest} | {support} | {eol} | {status} | {days} |".format(
+                    cycle=record.get("cycle", "—"),
+                    release_date=record.get("release_date") or "—",
+                    latest=record.get("latest") or "—",
+                    support=_format_flexible_date(record.get("support")),
+                    eol=_format_flexible_date(record.get("eol")),
+                    status=status,
+                    days=_format_days_until_eol(record.get("days_until_eol")),
+                )
+            )
+        lines.append("")
+
+    return "\n".join(lines).rstrip() + "\n"
+
+
+def save_eol_report(eol_data):
+    with open(EOL_REPORT_FILE, "w") as f:
+        f.write(render_markdown_report(eol_data))
+
+
+def is_merge_request_pipeline():
+    return os.environ.get("CI_PIPELINE_SOURCE") == "merge_request_event"
+
+
+def is_dry_run():
+    """True when Slack notifications and git commit/push should be skipped.
+
+    Covers merge request pipelines (validation-only, see README) and an explicit
+    DRY_RUN=true, e.g. for testing the script locally without a Slack webhook.
+    """
+    return is_merge_request_pipeline() or os.environ.get("DRY_RUN") == "true"
+
+
+def commit_and_push(paths):
+    """Commit and push the given paths if they changed, when running as a GitLab CI job."""
+    if os.environ.get("GITLAB_CI") != "true":
+        print("Not running in GitLab CI, skipping commit/push", file=sys.stderr)
+        return
+
+    if is_dry_run():
+        # Merge request pipelines are a validation-only run (see README): they confirm the
+        # script still produces valid artifacts and expose them for review, but must not
+        # write to the target branch. Protected variables like GITLAB_PUSH_TOKEN also won't
+        # be available here anyway, since MR pipelines usually run on an unprotected ref.
+        print("Dry run, skipping commit/push", file=sys.stderr)
+        return
+
+    if subprocess.run(["git", "diff", "--quiet", "--"] + paths).returncode == 0:
+        print("No changes to commit")
+        return
+
+    token = os.environ.get("GITLAB_PUSH_TOKEN")
+    if not token:
+        print("GITLAB_PUSH_TOKEN not set, cannot push updated state", file=sys.stderr)
+        sys.exit(1)
+
+    branch = os.environ.get("CI_DEFAULT_BRANCH", "main")
+    remote_url = f"https://gitlab-ci-token:{token}@git.servers.im/product/os-release-monitor.git"
+
+    subprocess.run(["git", "config", "user.name", "GitLab CI"], check=True)
+    subprocess.run(["git", "config", "user.email", "gitlab-ci@git.servers.im"], check=True)
+    subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
+    subprocess.run(["git", "add", *paths], check=True)
+    subprocess.run(["git", "commit", "-m", "chore: update os release state"], check=True)
+    subprocess.run(["git", "push", "origin", f"HEAD:{branch}"], check=True)
+
+
 def main():
     webhook_url = os.environ.get("SLACK_WEBHOOK_URL")
-    if not webhook_url:
+    dry_run = is_dry_run()
+    if not webhook_url and not dry_run:
         print("SLACK_WEBHOOK_URL not set", file=sys.stderr)
         sys.exit(1)
 
     state = load_state()
+    eol_data = load_eol_data()
+    vendors_eol = eol_data.get("vendors", {})
     new_releases = []
+    fetch_errors = []
 
     for vendor_key, slug in ENDOFLIFE_VENDORS.items():
         try:
-            cycles = get_endoflife_cycles(slug)
+            data = fetch_cycles(slug)
         except Exception as e:
             print(f"[{vendor_key}] fetch error: {e}", file=sys.stderr)
+            fetch_errors.append(vendor_key)
             continue
+
+        entries = filter_cycles(slug, data)
+        cycles = get_endoflife_cycles(entries)
 
         known_list = state.get(vendor_key, [])
         if not cycles and known_list:
@@ -99,16 +274,34 @@ def main():
                 for cycle in fresh:
                     new_releases.append(f"*{vendor_key}* {cycle}")
         state[vendor_key] = cycles
+        vendors_eol[vendor_key] = build_eol_records(entries)
 
     if new_releases:
-        post_to_slack(webhook_url, new_releases)
-        print(f"Posted {len(new_releases)} new release(s) to Slack")
+        if dry_run:
+            print(f"Dry run, skipping Slack notification for {len(new_releases)} release(s)")
+        else:
+            post_to_slack(webhook_url, new_releases)
+            print(f"Posted {len(new_releases)} new release(s) to Slack")
         for r in new_releases:
             print(f"  {r}")
     else:
         print("No new releases")
 
     save_state(state)
+    eol_data["vendors"] = vendors_eol
+    eol_data["generated_at"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    save_eol_data(eol_data)
+    save_eol_report(eol_data)
+
+    commit_and_push([STATE_FILE, EOL_DATA_FILE, EOL_REPORT_FILE])
+
+    if fetch_errors:
+        # Data for the failed vendor(s) is still whatever was last known (state/eol_data are
+        # only overwritten on success), and any vendors that did succeed were already
+        # committed above — but the run as a whole must fail so the pipeline surfaces that
+        # endoflife.date couldn't be reached for some vendors instead of going unnoticed.
+        print(f"Failed to fetch data for: {', '.join(fetch_errors)}", file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
