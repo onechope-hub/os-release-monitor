@@ -1,6 +1,6 @@
 # OS End-of-Life Report
 
-_Generated: 2026-08-14T13:26:48Z_
+_Generated: 2026-08-14T13:36:30Z_
 
 Full machine-readable data: [`eol_data.json`](eol_data.json). Regenerated on every `os-release-check` CI run.
 
