@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-08-19T09:31:40Z",
+  "generated_at": "2026-08-20T09:32:21Z",
   "vendors": {
     "almalinux": [
       {
         "cycle": "10",
-        "days_until_eol": 3207,
+        "days_until_eol": 3206,
         "eol": "2035-05-31",
         "is_eol": false,
         "latest": "10.2",
@@ -13,7 +13,7 @@
       },
       {
         "cycle": "9",
-        "days_until_eol": 2112,
+        "days_until_eol": 2111,
         "eol": "2032-05-31",
         "is_eol": false,
         "latest": "9.8",
@@ -22,7 +22,7 @@
       },
       {
         "cycle": "8",
-        "days_until_eol": 1016,
+        "days_until_eol": 1015,
         "eol": "2029-05-31",
         "is_eol": false,
         "latest": "8.10",
@@ -33,7 +33,7 @@
     "centos-stream": [
       {
         "cycle": "10",
-        "days_until_eol": 1381,
+        "days_until_eol": 1380,
         "eol": "2030-05-31",
         "is_eol": false,
         "latest": null,
@@ -42,7 +42,7 @@
       },
       {
         "cycle": "9",
-        "days_until_eol": 285,
+        "days_until_eol": 284,
         "eol": "2027-05-31",
         "is_eol": false,
         "latest": null,
@@ -51,7 +51,7 @@
       },
       {
         "cycle": "8",
-        "days_until_eol": -810,
+        "days_until_eol": -811,
         "eol": "2024-05-31",
         "is_eol": true,
         "latest": null,
@@ -62,7 +62,7 @@
     "debian": [
       {
         "cycle": "13",
-        "days_until_eol": 721,
+        "days_until_eol": 720,
         "eol": "2028-08-09",
         "is_eol": false,
         "latest": "13.6",
@@ -71,7 +71,7 @@
       },
       {
         "cycle": "12",
-        "days_until_eol": -39,
+        "days_until_eol": -40,
         "eol": "2026-07-11",
         "is_eol": true,
         "latest": "12.15",
@@ -80,7 +80,7 @@
       },
       {
         "cycle": "11",
-        "days_until_eol": -735,
+        "days_until_eol": -736,
         "eol": "2024-08-14",
         "is_eol": true,
         "latest": "11.11",
@@ -89,7 +89,7 @@
       },
       {
         "cycle": "10",
-        "days_until_eol": -1439,
+        "days_until_eol": -1440,
         "eol": "2022-09-10",
         "is_eol": true,
         "latest": "10.13",
@@ -98,7 +98,7 @@
       },
       {
         "cycle": "9",
-        "days_until_eol": -2223,
+        "days_until_eol": -2224,
         "eol": "2020-07-18",
         "is_eol": true,
         "latest": "9.13",
@@ -107,7 +107,7 @@
       },
       {
         "cycle": "8",
-        "days_until_eol": -2985,
+        "days_until_eol": -2986,
         "eol": "2018-06-17",
         "is_eol": true,
         "latest": "8.11",
@@ -116,7 +116,7 @@
       },
       {
         "cycle": "7",
-        "days_until_eol": -3768,
+        "days_until_eol": -3769,
         "eol": "2016-04-25",
         "is_eol": true,
         "latest": "7.11",
@@ -125,7 +125,7 @@
       },
       {
         "cycle": "6",
-        "days_until_eol": -4463,
+        "days_until_eol": -4464,
         "eol": "2014-05-31",
         "is_eol": true,
         "latest": "6.0.10",
@@ -134,7 +134,7 @@
       },
       {
         "cycle": "5",
-        "days_until_eol": -5308,
+        "days_until_eol": -5309,
         "eol": "2012-02-06",
         "is_eol": true,
         "latest": "5.0.10",
@@ -143,7 +143,7 @@
       },
       {
         "cycle": "4",
-        "days_until_eol": -6029,
+        "days_until_eol": -6030,
         "eol": "2010-02-15",
         "is_eol": true,
         "latest": "4.0r9",
@@ -152,7 +152,7 @@
       },
       {
         "cycle": "3.1",
-        "days_until_eol": -6715,
+        "days_until_eol": -6716,
         "eol": "2008-03-31",
         "is_eol": true,
         "latest": "3.1r8",
@@ -161,7 +161,7 @@
       },
       {
         "cycle": "3.0",
-        "days_until_eol": -7355,
+        "days_until_eol": -7356,
         "eol": "2006-06-30",
         "is_eol": true,
         "latest": "3.0r6",
@@ -170,7 +170,7 @@
       },
       {
         "cycle": "2.2",
-        "days_until_eol": -8451,
+        "days_until_eol": -8452,
         "eol": "2003-06-30",
         "is_eol": true,
         "latest": "2.2r7",
@@ -179,7 +179,7 @@
       },
       {
         "cycle": "2.1",
-        "days_until_eol": -9454,
+        "days_until_eol": -9455,
         "eol": "2000-09-30",
         "is_eol": true,
         "latest": "2.1r5",
@@ -188,7 +188,7 @@
       },
       {
         "cycle": "2.0",
-        "days_until_eol": -10047,
+        "days_until_eol": -10048,
         "eol": "1999-02-15",
         "is_eol": true,
         "latest": "2.0r5",
@@ -197,7 +197,7 @@
       },
       {
         "cycle": "1.3",
-        "days_until_eol": -10116,
+        "days_until_eol": -10117,
         "eol": "1998-12-08",
         "is_eol": true,
         "latest": "1.3.1 r.6",
@@ -206,7 +206,7 @@
       },
       {
         "cycle": "1.2",
-        "days_until_eol": -10527,
+        "days_until_eol": -10528,
         "eol": "1997-10-23",
         "is_eol": true,
         "latest": "1.2",
@@ -215,7 +215,7 @@
       },
       {
         "cycle": "1.1",
-        "days_until_eol": -10842,
+        "days_until_eol": -10843,
         "eol": "1996-12-12",
         "is_eol": true,
         "latest": "1.1",
@@ -226,7 +226,7 @@
     "freebsd": [
       {
         "cycle": "15.1",
-        "days_until_eol": 224,
+        "days_until_eol": 223,
         "eol": "2027-03-31",
         "is_eol": false,
         "latest": null,
@@ -235,7 +235,7 @@
       },
       {
         "cycle": "14.4",
-        "days_until_eol": 134,
+        "days_until_eol": 133,
         "eol": "2026-12-31",
         "is_eol": false,
         "latest": null,
@@ -244,7 +244,7 @@
       },
       {
         "cycle": "15",
-        "days_until_eol": 1230,
+        "days_until_eol": 1229,
         "eol": "2029-12-31",
         "is_eol": false,
         "latest": null,
@@ -253,7 +253,7 @@
       },
       {
         "cycle": "15.0",
-        "days_until_eol": 42,
+        "days_until_eol": 41,
         "eol": "2026-09-30",
         "is_eol": false,
         "latest": null,
@@ -262,7 +262,7 @@
       },
       {
         "cycle": "14.3",
-        "days_until_eol": -50,
+        "days_until_eol": -51,
         "eol": "2026-06-30",
         "is_eol": true,
         "latest": null,
@@ -271,7 +271,7 @@
       },
       {
         "cycle": "13.5",
-        "days_until_eol": -111,
+        "days_until_eol": -112,
         "eol": "2026-04-30",
         "is_eol": true,
         "latest": null,
@@ -280,7 +280,7 @@
       },
       {
         "cycle": "14.2",
-        "days_until_eol": -323,
+        "days_until_eol": -324,
         "eol": "2025-09-30",
         "is_eol": true,
         "latest": null,
@@ -289,7 +289,7 @@
       },
       {
         "cycle": "13.4",
-        "days_until_eol": -415,
+        "days_until_eol": -416,
         "eol": "2025-06-30",
         "is_eol": true,
         "latest": null,
@@ -298,7 +298,7 @@
       },
       {
         "cycle": "14.1",
-        "days_until_eol": -506,
+        "days_until_eol": -507,
         "eol": "2025-03-31",
         "is_eol": true,
         "latest": null,
@@ -307,7 +307,7 @@
       },
       {
         "cycle": "13.3",
-        "days_until_eol": -596,
+        "days_until_eol": -597,
         "eol": "2024-12-31",
         "is_eol": true,
         "latest": null,
@@ -316,7 +316,7 @@
       },
       {
         "cycle": "14.0",
-        "days_until_eol": -688,
+        "days_until_eol": -689,
         "eol": "2024-09-30",
         "is_eol": true,
         "latest": null,
@@ -325,7 +325,7 @@
       },
       {
         "cycle": "14",
-        "days_until_eol": 834,
+        "days_until_eol": 833,
         "eol": "2028-11-30",
         "is_eol": false,
         "latest": null,
@@ -334,7 +334,7 @@
       },
       {
         "cycle": "13.2",
-        "days_until_eol": -780,
+        "days_until_eol": -781,
         "eol": "2024-06-30",
         "is_eol": true,
         "latest": null,
@@ -343,7 +343,7 @@
       },
       {
         "cycle": "13.1",
-        "days_until_eol": -1115,
+        "days_until_eol": -1116,
         "eol": "2023-07-31",
         "is_eol": true,
         "latest": null,
@@ -352,7 +352,7 @@
       },
       {
         "cycle": "13.0",
-        "days_until_eol": -1449,
+        "days_until_eol": -1450,
         "eol": "2022-08-31",
         "is_eol": true,
         "latest": null,
@@ -361,7 +361,7 @@
       },
       {
         "cycle": "13",
-        "days_until_eol": -111,
+        "days_until_eol": -112,
         "eol": "2026-04-30",
         "is_eol": true,
         "latest": null,
@@ -381,7 +381,7 @@
       },
       {
         "cycle": "8",
-        "days_until_eol": 12,
+        "days_until_eol": 11,
         "eol": "2026-08-31",
         "is_eol": false,
         "latest": "8.4",
@@ -390,7 +390,7 @@
       },
       {
         "cycle": "7",
-        "days_until_eol": -749,
+        "days_until_eol": -750,
         "eol": "2024-07-31",
         "is_eol": true,
         "latest": "7.4",
@@ -399,7 +399,7 @@
       },
       {
         "cycle": "6",
-        "days_until_eol": -1419,
+        "days_until_eol": -1420,
         "eol": "2022-09-30",
         "is_eol": true,
         "latest": "6.4",
@@ -408,7 +408,7 @@
       },
       {
         "cycle": "5",
-        "days_until_eol": -2210,
+        "days_until_eol": -2211,
         "eol": "2020-07-31",
         "is_eol": true,
         "latest": "5.4",
@@ -417,7 +417,7 @@
       },
       {
         "cycle": "4",
-        "days_until_eol": -2972,
+        "days_until_eol": -2973,
         "eol": "2018-06-30",
         "is_eol": true,
         "latest": "4.4",
@@ -426,7 +426,7 @@
       },
       {
         "cycle": "3",
-        "days_until_eol": -3459,
+        "days_until_eol": -3460,
         "eol": "2017-02-28",
         "is_eol": true,
         "latest": "3.4",
@@ -435,7 +435,7 @@
       },
       {
         "cycle": "2",
-        "days_until_eol": -4463,
+        "days_until_eol": -4464,
         "eol": "2014-05-31",
         "is_eol": true,
         "latest": "2.3",
@@ -444,7 +444,7 @@
       },
       {
         "cycle": "1",
-        "days_until_eol": -4948,
+        "days_until_eol": -4949,
         "eol": "2013-01-31",
         "is_eol": true,
         "latest": "1.9",
@@ -455,7 +455,7 @@
     "rocky-linux": [
       {
         "cycle": "10",
-        "days_until_eol": 3207,
+        "days_until_eol": 3206,
         "eol": "2035-05-31",
         "is_eol": false,
         "latest": "10.2",
@@ -464,7 +464,7 @@
       },
       {
         "cycle": "9",
-        "days_until_eol": 2112,
+        "days_until_eol": 2111,
         "eol": "2032-05-31",
         "is_eol": false,
         "latest": "9.8",
@@ -473,7 +473,7 @@
       },
       {
         "cycle": "8",
-        "days_until_eol": 1016,
+        "days_until_eol": 1015,
         "eol": "2029-05-31",
         "is_eol": false,
         "latest": "8.10",
@@ -484,7 +484,7 @@
     "ubuntu": [
       {
         "cycle": "26.04",
-        "days_until_eol": 1715,
+        "days_until_eol": 1714,
         "eol": "2031-04-30",
         "is_eol": false,
         "latest": "26.04",
@@ -493,7 +493,7 @@
       },
       {
         "cycle": "24.04",
-        "days_until_eol": 1016,
+        "days_until_eol": 1015,
         "eol": "2029-05-31",
         "is_eol": false,
         "latest": "24.04.4",
@@ -502,7 +502,7 @@
       },
       {
         "cycle": "22.04",
-        "days_until_eol": 225,
+        "days_until_eol": 224,
         "eol": "2027-04-01",
         "is_eol": false,
         "latest": "22.04.5",
@@ -511,7 +511,7 @@
       },
       {
         "cycle": "20.04",
-        "days_until_eol": -445,
+        "days_until_eol": -446,
         "eol": "2025-05-31",
         "is_eol": true,
         "latest": "20.04.6",
@@ -520,7 +520,7 @@
       },
       {
         "cycle": "18.04",
-        "days_until_eol": -1176,
+        "days_until_eol": -1177,
         "eol": "2023-05-31",
         "is_eol": true,
         "latest": "18.04.6",
@@ -529,7 +529,7 @@
       },
       {
         "cycle": "16.04",
-        "days_until_eol": -1965,
+        "days_until_eol": -1966,
         "eol": "2021-04-02",
         "is_eol": true,
         "latest": "16.04.7",
@@ -538,7 +538,7 @@
       },
       {
         "cycle": "14.04",
-        "days_until_eol": -2696,
+        "days_until_eol": -2697,
         "eol": "2019-04-02",
         "is_eol": true,
         "latest": "14.04.6",
@@ -547,7 +547,7 @@
       },
       {
         "cycle": "12.04",
-        "days_until_eol": -3400,
+        "days_until_eol": -3401,
         "eol": "2017-04-28",
         "is_eol": true,
         "latest": "12.04.5",
@@ -556,7 +556,7 @@
       },
       {
         "cycle": "10.04",
-        "days_until_eol": -4850,
+        "days_until_eol": -4851,
         "eol": "2013-05-09",
         "is_eol": true,
         "latest": "10.04.4",
@@ -565,7 +565,7 @@
       },
       {
         "cycle": "8.04",
-        "days_until_eol": -4850,
+        "days_until_eol": -4851,
         "eol": "2013-05-09",
         "is_eol": true,
         "latest": "8.04.4",
@@ -574,7 +574,7 @@
       },
       {
         "cycle": "6.06",
-        "days_until_eol": -5558,
+        "days_until_eol": -5559,
         "eol": "2011-06-01",
         "is_eol": true,
         "latest": "6.06.2",
@@ -585,7 +585,7 @@
     "windows-server": [
       {
         "cycle": "2025",
-        "days_until_eol": 3009,
+        "days_until_eol": 3008,
         "eol": "2034-11-14",
         "is_eol": false,
         "latest": "10.0.26100",
@@ -594,7 +594,7 @@
       },
       {
         "cycle": "2022",
-        "days_until_eol": 1882,
+        "days_until_eol": 1881,
         "eol": "2031-10-14",
         "is_eol": false,
         "latest": "10.0.20348",
@@ -603,7 +603,7 @@
       },
       {
         "cycle": "2019",
-        "days_until_eol": 874,
+        "days_until_eol": 873,
         "eol": "2029-01-09",
         "is_eol": false,
         "latest": "10.0.17763",
@@ -612,7 +612,7 @@
       },
       {
         "cycle": "2016",
-        "days_until_eol": 146,
+        "days_until_eol": 145,
         "eol": "2027-01-12",
         "is_eol": false,
         "latest": "10.0.14393",
@@ -621,7 +621,7 @@
       },
       {
         "cycle": "2012-r2",
-        "days_until_eol": -1044,
+        "days_until_eol": -1045,
         "eol": "2023-10-10",
         "is_eol": true,
         "latest": "6.3.9600",
@@ -630,7 +630,7 @@
       },
       {
         "cycle": "2012",
-        "days_until_eol": -1044,
+        "days_until_eol": -1045,
         "eol": "2023-10-10",
         "is_eol": true,
         "latest": "6.2.9200",
@@ -639,7 +639,7 @@
       },
       {
         "cycle": "2008-r2-sp1",
-        "days_until_eol": -2409,
+        "days_until_eol": -2410,
         "eol": "2020-01-14",
         "is_eol": true,
         "latest": "6.1.7601",
@@ -648,7 +648,7 @@
       },
       {
         "cycle": "2008-sp2",
-        "days_until_eol": -2409,
+        "days_until_eol": -2410,
         "eol": "2020-01-14",
         "is_eol": true,
         "latest": "6.0.6003",
@@ -657,7 +657,7 @@
       },
       {
         "cycle": "2003-sp2",
-        "days_until_eol": -4054,
+        "days_until_eol": -4055,
         "eol": "2015-07-14",
         "is_eol": true,
         "latest": "5.2.3790",
@@ -666,7 +666,7 @@
       },
       {
         "cycle": "2003",
-        "days_until_eol": -7071,
+        "days_until_eol": -7072,
         "eol": "2007-04-10",
         "is_eol": true,
         "latest": "5.2.3790",
@@ -675,7 +675,7 @@
       },
       {
         "cycle": "2000",
-        "days_until_eol": -5881,
+        "days_until_eol": -5882,
         "eol": "2010-07-13",
         "is_eol": true,
         "latest": "5.0.2195",
