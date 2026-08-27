@@ -1,9 +1,7 @@
 import datetime
 import json
 import os
-import subprocess
 import sys
-import urllib.error
 import urllib.request
 
 ENDOFLIFE_VENDORS = {
@@ -87,6 +85,12 @@ def build_eol_records(entries):
 
 
 def post_to_slack(webhook_url, releases):
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        # Avoid spamming the real channel from a local test run — only GitHub Actions
+        # (or DRY_RUN=true, checked by the caller) should ever post for real.
+        print("Not running in GitHub Actions, skipping Slack post", file=sys.stderr)
+        return
+
     lines = "\n".join(f"• {r}" for r in releases)
     payload = {"text": f":new: *New OS releases detected:*\n{lines}"}
     req = urllib.request.Request(
@@ -149,7 +153,7 @@ def render_markdown_report(eol_data):
         lines.append("")
     lines.append(
         "Full machine-readable data: [`eol_data.json`](eol_data.json). "
-        "Regenerated on every `os-release-check` CI run."
+        "Regenerated on every scheduled run."
     )
     lines.append("")
 
@@ -182,51 +186,11 @@ def save_eol_report(eol_data):
         f.write(render_markdown_report(eol_data))
 
 
-def is_merge_request_pipeline():
-    return os.environ.get("CI_PIPELINE_SOURCE") == "merge_request_event"
-
-
 def is_dry_run():
-    """True when Slack notifications and git commit/push should be skipped.
-
-    Covers merge request pipelines (validation-only, see README) and an explicit
-    DRY_RUN=true, e.g. for testing the script locally without a Slack webhook.
-    """
-    return is_merge_request_pipeline() or os.environ.get("DRY_RUN") == "true"
-
-
-def commit_and_push(paths):
-    """Commit and push the given paths if they changed, when running as a GitLab CI job."""
-    if os.environ.get("GITLAB_CI") != "true":
-        print("Not running in GitLab CI, skipping commit/push", file=sys.stderr)
-        return
-
-    if is_dry_run():
-        # Merge request pipelines are a validation-only run (see README): they confirm the
-        # script still produces valid artifacts and expose them for review, but must not
-        # write to the target branch. Protected variables like GITLAB_PUSH_TOKEN also won't
-        # be available here anyway, since MR pipelines usually run on an unprotected ref.
-        print("Dry run, skipping commit/push", file=sys.stderr)
-        return
-
-    if subprocess.run(["git", "diff", "--quiet", "--"] + paths).returncode == 0:
-        print("No changes to commit")
-        return
-
-    token = os.environ.get("GITLAB_PUSH_TOKEN")
-    if not token:
-        print("GITLAB_PUSH_TOKEN not set, cannot push updated state", file=sys.stderr)
-        sys.exit(1)
-
-    branch = os.environ.get("CI_DEFAULT_BRANCH", "main")
-    remote_url = f"https://gitlab-ci-token:{token}@git.servers.im/product/os-release-monitor.git"
-
-    subprocess.run(["git", "config", "user.name", "GitLab CI"], check=True)
-    subprocess.run(["git", "config", "user.email", "gitlab-ci@git.servers.im"], check=True)
-    subprocess.run(["git", "remote", "set-url", "origin", remote_url], check=True)
-    subprocess.run(["git", "add", *paths], check=True)
-    subprocess.run(["git", "commit", "-m", "chore: update os release state"], check=True)
-    subprocess.run(["git", "push", "origin", f"HEAD:{branch}"], check=True)
+    """True when the Slack notification should be skipped, e.g. for local testing
+    without a webhook. git commit/push (state.json/eol_data.json/eol_data.md) is
+    handled entirely by the GitHub Actions workflow, not by this script."""
+    return os.environ.get("DRY_RUN") == "true"
 
 
 def main():
@@ -292,8 +256,6 @@ def main():
     eol_data["generated_at"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     save_eol_data(eol_data)
     save_eol_report(eol_data)
-
-    commit_and_push([STATE_FILE, EOL_DATA_FILE, EOL_REPORT_FILE])
 
     if fetch_errors:
         # Data for the failed vendor(s) is still whatever was last known (state/eol_data are
